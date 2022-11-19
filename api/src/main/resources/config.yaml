@@ -9,7 +9,6 @@ kumuluzee:
       port: 8080
   datasources:
     - jndi-name: jdbc/ClientMetadataDS
-      connection-url: jdbc:postgresql://localhost:5432/client-metadata
+      connection-url: jdbc:postgresql://surus.db.elephantsql.com:5432/fqdjhram
       username: dbuser
       password: postgres
-      max-pool-size: 20
