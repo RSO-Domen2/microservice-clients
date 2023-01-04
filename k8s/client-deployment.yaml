@@ -13,7 +13,7 @@ spec:
         app: client-microservice
     spec:
       containers:
-        - image: vilonja/microservice-client:2023-01-03-16-45-11
+        - image: vilonja/microservice-client:2023-01-04-19-59-12
           name: client-microservice
           env:
             - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL
@@ -33,13 +33,13 @@ spec:
             httpGet:
               path: /health/live
               port: server
-            initialDelaySeconds: 120
+            initialDelaySeconds: 20
             periodSeconds: 3
           readinessProbe:
             httpGet:
               path: /health/ready
               port: server
-            initialDelaySeconds: 120
+            initialDelaySeconds: 20
             periodSeconds: 3
 
 ---
