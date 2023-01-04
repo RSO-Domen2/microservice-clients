@@ -11,12 +11,13 @@ public class ClientMetadataConverter {
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setSurname(entity.getSurname());
+        dto.setUsername(entity.getUsername());
         dto.setLat(entity.getLat());
         dto.setLng(entity.getLng());
         dto.setStreetNumber(entity.getStreetNumber());
         dto.setStreetName(entity.getStreetName());
         dto.setPostalCode(entity.getPostalCode());
-        dto.setPostalName(entity.getPostalName());
+        dto.setCity(entity.getCity());
         dto.setCountry(entity.getCountry());
         dto.setCreated(entity.getCreated());
 
@@ -29,12 +30,13 @@ public class ClientMetadataConverter {
         ClientMetadataEntity entity = new ClientMetadataEntity();
         entity.setName(dto.getName());
         entity.setSurname(dto.getSurname());
+        entity.setUsername(dto.getUsername());
         entity.setLat(dto.getLat());
         entity.setLng(dto.getLng());
         entity.setStreetNumber(dto.getStreetNumber());
         entity.setStreetName(dto.getStreetName());
         entity.setPostalCode(dto.getPostalCode());
-        entity.setPostalName(dto.getPostalName());
+        entity.setCity(dto.getCity());
         entity.setCountry(dto.getCountry());
         entity.setCreated(dto.getCreated());
 

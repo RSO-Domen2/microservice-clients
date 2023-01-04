@@ -15,11 +15,14 @@ import si.fri.rso.domen2.client.services.beans.ClientMetadataBean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 
@@ -96,8 +99,23 @@ public class ClientMetadataResource {
             clientMetadata = clientMetadataBean.createClientMetadata(clientMetadata);
         }
 
-        return Response.status(Response.Status.CONFLICT).entity(clientMetadata).build();
+        return Response.status(Response.Status.CREATED).entity(clientMetadata).build();
 
+    }
+
+    @GET
+    public void asyncRazmerja(@Suspended final AsyncResponse asinhroniOdgovor) {
+        asinhroniOdgovor.setTimeoutHandler(unused -> unused.resume(Response.status(503).entity("Operation time out.").build()));
+        asinhroniOdgovor.setTimeout(10, TimeUnit.SECONDS);
+        new Thread(() -> {
+            String rezultat = null;
+            try {
+                //rezultat = rc.getDistance(46.0660318, 14.3920158, 45.803643, 15.1346663);
+            } catch(Exception e) {
+                rezultat = e.toString();
+            }
+            asinhroniOdgovor.resume(rezultat);
+        }).start();
     }
 
 

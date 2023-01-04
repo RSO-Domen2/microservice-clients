@@ -13,8 +13,10 @@ public class ClientMetadata {
     private String street_number;
     private String street_name;
     private Integer postal_code;
-    private String postal_name;
     private String country;
+    private String city;
+    private String username;
+    private String password;
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -56,9 +58,6 @@ public class ClientMetadata {
     public Integer getPostalCode() { return postal_code; }
     public void setPostalCode(Integer postal_code) {this.postal_code = postal_code;}
 
-    public String getPostalName() { return postal_name; }
-    public void setPostalName(String postal_name) {this.postal_name = postal_name;}
-
     public String getCountry() {return country;}
     public void setCountry(String country) {this.country = country;}
 
@@ -68,6 +67,17 @@ public class ClientMetadata {
     public boolean isValid() {
         return (this.name != null && this.surname != null && this.lat != null & this.lng != null);
     }
+
+    public String getCity() {return city;}
+    public void setCity(String city) {this.city = city;}
+
+    public String getUsername() {return username;}
+    public void setUsername(String username) {this.username = username;}
+
+    public String getPassword() {return password;}
+    public void setPassword(String password) {this.password = password;}
+
+
 
 
 
