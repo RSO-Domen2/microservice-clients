@@ -3,9 +3,11 @@ package si.fri.rso.domen2.client.services.beans;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.UriInfo;
+import java.time.Instant;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -23,7 +25,7 @@ public class ClientMetadataBean {
 
     private Logger log = Logger.getLogger(ClientMetadataBean.class.getName());
 
-    @Inject
+    @PersistenceContext
     private EntityManager em;
 
     public List<ClientMetadata> getClientMetadata() {
@@ -35,6 +37,10 @@ public class ClientMetadataBean {
 
         return resultList.stream().map(ClientMetadataConverter::toDto).collect(Collectors.toList());
 
+    }
+
+    public List<ClientMetadataEntity> getClientMetadata(QueryParameters query) {
+        return JPAUtils.queryEntities(em, ClientMetadataEntity.class, query);
     }
 
     public List<ClientMetadata> getImageMetadataFilter(UriInfo uriInfo) {
@@ -62,6 +68,7 @@ public class ClientMetadataBean {
     public ClientMetadata createClientMetadata(ClientMetadata clientMetadata) {
 
         ClientMetadataEntity clientMetadataEntity = ClientMetadataConverter.toEntity(clientMetadata);
+        clientMetadataEntity.setCreated(Instant.now());
 
         try {
             beginTx();

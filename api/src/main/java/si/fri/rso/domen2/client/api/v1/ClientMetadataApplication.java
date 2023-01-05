@@ -13,7 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.servers.Server;
 @OpenAPIDefinition(info = @Info(title = "Client catalog API", version = "v1",
         contact = @Contact(email = "dv6526@student.uni-lj.si"),
         license = @License(name = "dev"), description = "API for managing client metadata."),
-        servers = @Server(url = "http://localhost:8080/"))
+        servers = @Server(url = "http://localhost:8081/"))
 @ApplicationPath("/v1")
 public class ClientMetadataApplication extends Application {
 

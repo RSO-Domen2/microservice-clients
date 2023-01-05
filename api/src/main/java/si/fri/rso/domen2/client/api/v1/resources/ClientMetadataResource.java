@@ -1,5 +1,8 @@
 package si.fri.rso.domen2.client.api.v1.resources;
 
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.rest.utils.QueryStringBuilder;
+import com.kumuluz.ee.rest.utils.QueryStringDefaults;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.headers.Header;
@@ -9,11 +12,19 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.persistence.internal.jpa.rs.metadata.model.Query;
 import si.fri.rso.domen2.client.lib.ClientMetadata;
+import si.fri.rso.domen2.client.models.entities.ClientMetadataEntity;
 import si.fri.rso.domen2.client.services.beans.ClientMetadataBean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -38,23 +49,60 @@ public class ClientMetadataResource {
     @Inject
     private ClientMetadataBean clientMetadataBean;
 
+    private QueryStringDefaults qsd = new QueryStringDefaults().maxLimit(100).defaultLimit(20).defaultOffset(0);
 
     @Context
     protected UriInfo uriInfo;
 
+    @PersistenceContext
+    private EntityManager em;
+
+    @GET
     @Operation(description = "Get all Client metadata.", summary = "Get all metadata.")
     @APIResponses({
             @APIResponse(responseCode = "200",
                     description = "List of Client metadata.",
-                    content = @Content(schema = @Schema(implementation = ClientMetadata.class, type = SchemaType.ARRAY)),
-                    headers = {@Header(name = "X-Total-Count", description = "Number of objects in list")}
+                    content = @Content(schema = @Schema(implementation = ClientMetadata.class, type = SchemaType.ARRAY))
             )})
-    @GET
     public Response getClientMetadata() {
+        this.log.info("GET "+uriInfo.getRequestUri().toString());
+        // QueryParameters query = qsd.builder().queryEncoded(uriInfo.getRequestUri().getRawQuery()).build();
+        // QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).defaultOffset(0).defaultLimit(10).build();
+        // QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).build();
+        List<ClientMetadataEntity> clients = clientMetadataBean.getClientMetadata(createQuery());
 
-        List<ClientMetadata> clientMetadata = clientMetadataBean.getClientMetadata();
+        return Response.status(Response.Status.OK).entity(clients).build();
+    }
 
-        return Response.status(Response.Status.OK).entity(clientMetadata).build();
+    @GET
+    @Path("/login")
+    @Operation(description = "Get login data.", summary = "Get login metadata.")
+    @APIResponses({
+            @APIResponse(responseCode = "200",
+                    description = "Client login data",
+                    content = @Content(schema = @Schema(implementation = ClientMetadata.class, type = SchemaType.ARRAY))
+            )})
+    public Response getLoginData() {
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ClientMetadataEntity> criteria = cb.createQuery(ClientMetadataEntity.class);
+        Root<ClientMetadataEntity> root = criteria.from(ClientMetadataEntity.class);
+        String nameVal = uriInfo.getQueryParameters().getFirst("name");
+        String passVal = uriInfo.getQueryParameters().getFirst("password");
+        // create predicate to filter the results
+        Predicate predicate = cb.and(
+                cb.equal(root.get("name"), nameVal),
+                cb.equal(root.get("password"), passVal)
+        );
+
+        // add the predicate to the criteria query
+        criteria.where(predicate);
+
+        List<ClientMetadataEntity> results = em.createQuery(criteria).getResultList();
+        if (results.size() == 0) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.status(Response.Status.OK).entity(results).build();
     }
 
 
@@ -102,22 +150,6 @@ public class ClientMetadataResource {
         return Response.status(Response.Status.CREATED).entity(clientMetadata).build();
 
     }
-
-    @GET
-    public void asyncRazmerja(@Suspended final AsyncResponse asinhroniOdgovor) {
-        asinhroniOdgovor.setTimeoutHandler(unused -> unused.resume(Response.status(503).entity("Operation time out.").build()));
-        asinhroniOdgovor.setTimeout(10, TimeUnit.SECONDS);
-        new Thread(() -> {
-            String rezultat = null;
-            try {
-                //rezultat = rc.getDistance(46.0660318, 14.3920158, 45.803643, 15.1346663);
-            } catch(Exception e) {
-                rezultat = e.toString();
-            }
-            asinhroniOdgovor.resume(rezultat);
-        }).start();
-    }
-
 
     @Operation(description = "Update metadata for client.", summary = "Update metadata")
     @APIResponses({
@@ -170,6 +202,18 @@ public class ClientMetadataResource {
         else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+    }
+
+    /**
+     * Helper method for parsing query parameters from uri.
+     *
+     * @return query parameters
+     */
+    private QueryParameters createQuery() {
+        String query = uriInfo.getRequestUri().getQuery();
+        QueryStringBuilder qb = QueryParameters.query(query);
+        QueryParameters qp = qb.build();
+        return QueryParameters.query(uriInfo.getRequestUri().getQuery()).defaultOffset(0).defaultLimit(10).build();
     }
 
 

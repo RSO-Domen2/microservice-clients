@@ -1,6 +1,7 @@
 package si.fri.rso.domen2.client.models.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
@@ -10,7 +11,7 @@ import java.time.Instant;
                 @NamedQuery(name = "ClientMetadataEntity.getAll",
                         query = "SELECT im FROM ClientMetadataEntity im")
         })
-public class ClientMetadataEntity {
+public class ClientMetadataEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
