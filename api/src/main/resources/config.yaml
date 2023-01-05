@@ -29,3 +29,8 @@ kumuluzee:
 rest-properties:
   maintenance-mode: false
   broken: false
+
+external-services:
+  radar:
+    url: https://api.radar.io
+    secret: prj_test_pk_0f864f625ddff3adb7949f7a2a8c9f2a3a001c72

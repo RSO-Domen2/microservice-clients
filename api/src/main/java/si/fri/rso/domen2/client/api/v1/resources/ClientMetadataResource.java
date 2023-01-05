@@ -14,8 +14,11 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.persistence.internal.jpa.rs.metadata.model.Query;
 import si.fri.rso.domen2.client.lib.ClientMetadata;
+import si.fri.rso.domen2.client.lib.radar.AddressesItem;
+import si.fri.rso.domen2.client.lib.radar.RadarResponse;
 import si.fri.rso.domen2.client.models.entities.ClientMetadataEntity;
 import si.fri.rso.domen2.client.services.beans.ClientMetadataBean;
+import si.fri.rso.domen2.client.services.clients.RadarClient;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -57,6 +60,9 @@ public class ClientMetadataResource {
     @PersistenceContext
     private EntityManager em;
 
+    @Inject
+    private RadarClient rc;
+
     @GET
     @Operation(description = "Get all Client metadata.", summary = "Get all metadata.")
     @APIResponses({
@@ -87,11 +93,11 @@ public class ClientMetadataResource {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ClientMetadataEntity> criteria = cb.createQuery(ClientMetadataEntity.class);
         Root<ClientMetadataEntity> root = criteria.from(ClientMetadataEntity.class);
-        String nameVal = uriInfo.getQueryParameters().getFirst("name");
+        String nameVal = uriInfo.getQueryParameters().getFirst("username");
         String passVal = uriInfo.getQueryParameters().getFirst("password");
         // create predicate to filter the results
         Predicate predicate = cb.and(
-                cb.equal(root.get("name"), nameVal),
+                cb.equal(root.get("username"), nameVal),
                 cb.equal(root.get("password"), passVal)
         );
 
@@ -144,6 +150,13 @@ public class ClientMetadataResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         else {
+            RadarResponse location = rc.reverseGeocode(clientMetadata.getLat(), clientMetadata.getLng());
+            AddressesItem adr = location.getAddresses().get(0);
+            clientMetadata.setCity(adr.getCity());
+            clientMetadata.setCountry(adr.getCountry());
+            clientMetadata.setPostalCode(Integer.parseInt(adr.getPostalCode()));
+            clientMetadata.setStreetName(adr.getStreet());
+            clientMetadata.setStreetNumber(adr.getNumber());
             clientMetadata = clientMetadataBean.createClientMetadata(clientMetadata);
         }
 
