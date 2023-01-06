@@ -41,6 +41,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.kumuluz.ee.metrics</groupId>
+            <artifactId>kumuluzee-metrics-core</artifactId>
+            <version>${kumuluzee-metrics.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>si.fri.rso.domen2</groupId>
             <artifactId>client-models</artifactId>
         </dependency>
