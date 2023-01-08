@@ -35,6 +35,11 @@
 
 
         <dependency>
+            <groupId>com.kumuluz.ee.cors</groupId>
+            <artifactId>kumuluzee-cors</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>si.fri.rso.domen2</groupId>
             <artifactId>client-services</artifactId>
         </dependency>

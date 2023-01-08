@@ -25,6 +25,10 @@ kumuluzee:
       disk-space-health-check:
         type: both
         threshold: 10000000 # 10MB
+  cors-filter:
+    servlet:
+      allow-origin: "*"
+
   logs:
     config-file: '<?xml version="1.0" encoding="UTF-8"?>
                       <Configuration name="client-logging">
