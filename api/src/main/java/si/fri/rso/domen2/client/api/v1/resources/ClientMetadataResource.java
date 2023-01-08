@@ -1,5 +1,6 @@
 package si.fri.rso.domen2.client.api.v1.resources;
 
+import com.kumuluz.ee.logs.cdi.Log;
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.utils.QueryStringBuilder;
 import com.kumuluz.ee.rest.utils.QueryStringDefaults;
@@ -40,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 
-
+@Log
 @ApplicationScoped
 @Path("/client")
 @Produces(MediaType.APPLICATION_JSON)
