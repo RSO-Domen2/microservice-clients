@@ -89,7 +89,7 @@ public class ClientMetadataResource {
                     content = @Content(schema = @Schema(implementation = ClientMetadata.class, type = SchemaType.ARRAY))
             )})
     public Response getLoginData() {
-
+        log.info("GET "+uriInfo.getRequestUri().toString());
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ClientMetadataEntity> criteria = cb.createQuery(ClientMetadataEntity.class);
         Root<ClientMetadataEntity> root = criteria.from(ClientMetadataEntity.class);
@@ -123,7 +123,7 @@ public class ClientMetadataResource {
     @Path("/{clientMetadataId}")
     public Response getClientMetadata(@Parameter(description = "Metadata ID.", required = true)
                                      @PathParam("clientMetadataId") Integer clientMetadataId) {
-
+        log.info("GET "+uriInfo.getRequestUri().toString());
         ClientMetadata clientMetadata = clientMetadataBean.getClientMetadata(clientMetadataId);
 
         if (clientMetadata == null) {
@@ -145,7 +145,7 @@ public class ClientMetadataResource {
             description = "DTO object with client metadata.",
             required = true, content = @Content(
             schema = @Schema(implementation = ClientMetadata.class))) ClientMetadata clientMetadata) {
-
+        log.info("GET "+uriInfo.getRequestUri().toString());
         if (!clientMetadata.isValid()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
@@ -180,7 +180,7 @@ public class ClientMetadataResource {
                                              required = true, content = @Content(
                                              schema = @Schema(implementation = ClientMetadata.class)))
                                              ClientMetadata clientMetadata){
-
+        log.info("GET "+uriInfo.getRequestUri().toString());
         clientMetadata = clientMetadataBean.putClientMetadata(clientMetadataId, clientMetadata);
 
         if (clientMetadata == null) {
@@ -206,7 +206,7 @@ public class ClientMetadataResource {
     @Path("{clientMetadataId}")
     public Response deleteClientMetadata(@Parameter(description = "Metadata ID.", required = true)
                                         @PathParam("clientMetadataId") Integer clientMetadataId){
-
+        log.info("GET "+uriInfo.getRequestUri().toString());
         boolean deleted = clientMetadataBean.deleteClientMetadata(clientMetadataId);
 
         if (deleted) {

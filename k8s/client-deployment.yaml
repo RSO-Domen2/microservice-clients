@@ -13,7 +13,7 @@ spec:
         app: client-microservice
     spec:
       containers:
-        - image: vilonja/microservice-client:2023-01-04-20-19-08
+        - image: vilonja/microservice-client:2023-01-08-11-00-41
           name: client-microservice
           env:
             - name: KUMULUZEE_DATASOURCES0_CONNECTIONURL

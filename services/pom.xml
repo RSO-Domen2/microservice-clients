@@ -47,6 +47,12 @@
         </dependency>
 
         <dependency>
+            <artifactId>kumuluzee-logs-log4j2</artifactId>
+            <groupId>com.kumuluz.ee.logs</groupId>
+            <version>${kumuluzee-logs.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>si.fri.rso.domen2</groupId>
             <artifactId>client-models</artifactId>
         </dependency>
