@@ -20,6 +20,7 @@ public class ClientMetadataConverter {
         dto.setCity(entity.getCity());
         dto.setCountry(entity.getCountry());
         dto.setCreated(entity.getCreated());
+        dto.setPassword(entity.getPassword());
 
         return dto;
 
@@ -39,6 +40,7 @@ public class ClientMetadataConverter {
         entity.setCity(dto.getCity());
         entity.setCountry(dto.getCountry());
         entity.setCreated(dto.getCreated());
+        entity.setPassword(dto.getPassword());
 
         return entity;
 
